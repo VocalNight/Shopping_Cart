@@ -1,34 +1,35 @@
 import "../../style/store.css";
 
 export default function Card({ cartConfig, item }) {
-
   function updateCartItems(item) {
-    let updatedArray = [];
-
-    let isItemInArray = 
-    cartConfig.cartItems
-    .find((ArrayItem) => ArrayItem.name === item.name);
+    let isItemInArray = findItemInArray();
 
     if (isItemInArray) {
-      updatedArray = cartConfig.cartItems
-      .map((arrayItem) => {
-        if (item.name === arrayItem.name) {
-          let newItem = {
-            ...arrayItem,
-            quantity: arrayItem.quantity + 1,
-          };
-
-          return newItem;
-        }
-
-        return arrayItem;
-      });
-
-      cartConfig.updateCart(updatedArray);
+      cartConfig.updateCart(updateItemInArray());
     } else {
-        cartConfig.updateCart(cartConfig.cartItems
-          .concat(item));
+      cartConfig.updateCart(cartConfig.cartItems.concat(item));
     }
+  }
+
+  function findItemInArray() {
+    return cartConfig.cartItems.find(
+      (ArrayItem) => ArrayItem.name === item.name
+    );
+  }
+
+  function updateItemInArray() {
+    return cartConfig.cartItems.map((arrayItem) => {
+      if (item.name === arrayItem.name) {
+        let newItem = {
+          ...arrayItem,
+          quantity: arrayItem.quantity + 1,
+        };
+
+        return newItem;
+      }
+
+      return arrayItem;
+    });
   }
 
   return (
@@ -42,7 +43,7 @@ export default function Card({ cartConfig, item }) {
         <p>Price: {item.price} Gold</p>
       </div>
       <div>
-        <button onClick={() => updateCartItems(item)}>Add to cart</button>
+        <button className="addCartButton" onClick={() => updateCartItems(item)}>Add to cart</button>
       </div>
     </div>
   );

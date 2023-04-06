@@ -1,49 +1,63 @@
-import { useState } from "react"
+export default function CheckoutCard({ cartConfig, item }) {
+  function increaseQuantity() {
+    updateItem("+");
+  }
 
-export default function CheckoutCard({cartConfig, item}) {
+  function decreaseQuantity() {
+    updateItem("-");
+  }
 
-    function increaseQuantity() {
-        updateItem('+');
+  
+  function updateItem(operation) {
+      let itemsInCart = [];
+      
+      let quantity = operation === "+" ? item.quantity + 1 : item.quantity - 1;
+      
+    if (quantity === 0) {
+      itemsInCart = removeItemFromCart();
+    } else {
+        itemsInCart = updateItems(quantity);
     }
+    
+    cartConfig.updateCart(itemsInCart);
+}
 
-    function decreaseQuantity() {
-        updateItem('-')
-    }
+function removeItemFromCart() {
+  return cartConfig.cartItems.filter(
+    (cartItem) => item.name !== cartItem.name
+  );
+}
 
-    function updateItem(operation) {
-        cartConfig.updateCart(
-            cartConfig.cartItems
-            .map((cartItem) => {
-                if (cartItem.name === item.name) {
+  function updateItems(quantity) {
+    return cartConfig.cartItems.map((cartItem) => {
+      if (cartItem.name === item.name) {
+        return {
+          ...cartItem,
+          quantity: quantity,
+        };
+      }
+      return cartItem;
+    });
+  }
 
-                    let quantity = 
-                    operation === '+' ? 
-                    cartItem.quantity + 1
-                    :
-                    cartItem.quantity - 1
-
-                    if (quantity <= 1) {
-                        quantity = 1;
-                    }
-
-                    return {
-                        ...cartItem,
-                        quantity: quantity
-                    }
-                }
-                return cartItem
-            })
-        )
-    }
-
-    return (
-        <div>
-            <p><img src={item.image} alt="" /></p>
-            <p>{item.name}</p>
-            <p>Quantity: {item.quantity}</p>
-            <p>Item total: {item.price * item.quantity}</p>
-            <button onClick={() => increaseQuantity()}>+</button>
-            <button onClick={() => decreaseQuantity()}>-</button>
-        </div>
-    )
+  return (
+    <div className="checkoutCard">
+      <div className="itemTitle">
+        <img className="image" src={item.image} alt="" />
+        <h3>{item.name}</h3>
+      </div>
+      <div>
+        <p>Quantity: {item.quantity}</p>
+        <p>Item total: {item.price * item.quantity}</p>
+      </div>
+      <div>
+        <button className="quantityBtn" onClick={() => increaseQuantity()}>
+          +
+        </button>
+        <button className="quantityBtn" onClick={() => decreaseQuantity()}>
+          -
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -1,27 +1,30 @@
 import CheckoutCard from "./Cards/CheckoutCard";
+import "../style/store.css";
+import TotalCard from "./Cards/TotalCard";
 
 export default function ShoppingCart({ cartConfig }) {
+  let itemsList = cartConfig.cartItems;
+  let listLength = cartConfig.cartItems.length;
 
-    let itemsList = cartConfig.cartItems;
+  let total = cartConfig.cartItems.reduce(
+    (acc, item) => acc + item.quantity * item.price,
+    0
+  );
 
-    let total = cartConfig.cartItems.reduce(
-        (acc, item) => acc + (item.quantity * item.price), 0
-    );
-    
   return (
-    <div>
-      <div>
-        <h1>Items in your cart</h1>
-      </div>
-
-      <div>
+    <div className="mainCheckout">
+      <div className="checkoutCards">
         {itemsList.map((item) => (
-            <CheckoutCard cartConfig={cartConfig} item={item} key={item.name}/>
+          <CheckoutCard cartConfig={cartConfig} item={item} key={item.name} />
         ))}
       </div>
-      <div>
-        <p>Total: {total}</p>
-      </div>
+      {listLength !== 0 ? (
+        <div>
+          <TotalCard total={total} />
+        </div>
+      ) : (
+        <div className="cartEmpty">Your Cart is Empty!</div>
+      )}
     </div>
   );
 }
